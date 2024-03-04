@@ -104,4 +104,4 @@ cmdout_ver db 'System version 0.0.1', 0
 
 ; --- fail ---
 cmd_none db '', 0
-failure_cmd db 'Bad command or file name.', 0
+failure_cmd db 'Invalid command or file name.', 0
