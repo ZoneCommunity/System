@@ -40,13 +40,15 @@ Main:
     ; Begin typing loop
     call command
 
-    mov si, worked
+    mov si, haltedmsg
     call println
+
+    jmp .hang
 
 .hang:
     cli
     hlt
-    jmp .hang
+    jmp $
 
 Stack:
     mov ax, 0x0200b
@@ -66,4 +68,4 @@ welcome_sys3 db " and I'm using print!", 0
 info1 db "Type 'help' for a list of commands.", 0
 
 prompt_symb db "C:/>", 0
-worked db 'Worked', 0
+haltedmsg db 'System has halted!', 0

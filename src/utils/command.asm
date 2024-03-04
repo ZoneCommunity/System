@@ -47,6 +47,15 @@ command:
     repe cmpsb
     je .cmdver
 
+    mov si, buffer
+    mov cx, [buffer_len]
+    mov [buffer_len], cl
+    mov si, buffer
+    mov cx, [buffer_len]
+    mov di, cmd_halt
+    repe cmpsb
+    je .cmdhalt
+
     mov si, failure_cmd
     jmp .fail
 
@@ -58,6 +67,8 @@ command:
     call println
     mov si, cmdout_help_3
     call println
+    mov si, cmdout_help_4
+    call println
     call newln
     jmp .end
 
@@ -66,6 +77,10 @@ command:
     call println
     call newln
     jmp .end
+
+.cmdhalt:
+    call newln
+    ret
 
 ; end
 .fail:
@@ -92,11 +107,13 @@ command:
 ; Command inputs
 cmd_help db 'help', 0
 cmd_ver db 'ver', 0
+cmd_halt db 'halt', 0
 
 ; Command outputs
 cmdout_help_1 db '---          Help menu          ---', 0
 cmdout_help_2 db 'ver       > Displays System version', 0
 cmdout_help_3 db 'help      > Shows help menu for CMD', 0
+cmdout_help_4 db 'halt      > Halts the system', 0
 
 ; OS getting too big, needs a proper bootloader and disk features
 
