@@ -1,22 +1,10 @@
-%INCLUDE "src/disk/memory.asm"
-
 [BITS 16]
 [ORG 0x7C00]
 
 call start
 
-%INCLUDE "src/disk/disk.asm"
-
 start:
     ; to 32 bit
-
-    mov byte[sector], 2
-    mov byte[drive], 80h
-    mov byte[sectornum], 2
-    mov word[segmentaddr], KERNELSEG ; kernel seg
-    mov word[segmentoffset], KERNELOFFSET ; kernel offset
-    call DiskRead
-    
     cli                 ; disable interrupts
     lgdt [gdt_desc]     ; load GDT descriptor
     mov eax, cr0
@@ -58,10 +46,32 @@ PModeMain:
     mov ss, ax
     mov esp, 0x90000   ; stack pointer
     
-    jmp KERNELADDR
+    ; Clear screen and make it blue
+    mov eax, 0xB8000    ; VGA text buffer address
+    mov ecx, 80*25      ; Number of characters on the screen
+    mov edi, eax        ; Destination pointer
+    xor eax, eax        ; ' ' character
+    mov ah, 1Bh         ; Blue attribute
+    rep stosw           ; Fill screen with spaces and blue attribute
+
+    mov eax, 0xB8000    ; VGA text buffer address
+    mov edi, eax        ; Destination pointer
+    mov esi, msg        ; Source pointer (address of string)
+    mov ecx, msg_len    ; String length
+    cld                 ; Clear direction flag (forward direction)
+    mov ah, 1Bh         ; Attribute byte (bright magenta on blue background)
     
+copy_loop:
+    lodsb               ; Load byte from string into AL, increment SI
+    stosw               ; Store character and attribute into VGA text buffer, increment DI
+    loop copy_loop      ; Repeat until ECX becomes zero
+
 hang:
     jmp hang
+
+
+msg db 'Hello, World! Wow you work amazing whatever', 0   ; Null-terminated string
+msg_len equ $ - msg         ; Length of the string (excluding null terminator)
 
 
 times 510-($-$$) db 0
