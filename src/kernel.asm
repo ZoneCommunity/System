@@ -1,81 +1,71 @@
 %INCLUDE "src/disk/memory.asm"
-
 [BITS 16]
-[ORG KERNELOFFSET]
 
-jmp to32bit
 
-cool:
+section .bss
+    buffer resb 255    ; Define a buffer to store input (maximum size 255 bytes)
+    buffer_len resb 1  ; Variable to store the length of input
 
-    jmp cool
+section .text
 
-to32bit:    
-    cli                 ; disable interrupts
-    lgdt [gdt_desc]     ; load GDT descriptor
-    mov eax, cr0
-    or eax, 1           ; set protection enable bit
-    mov cr0, eax
-    jmp 08h:PModeMain   ; Jump to 32-bit code
+jmp Main
 
-gdt:
-    gdt_null:
-        dd 0
-        dd 0
+; Include external code
+%INCLUDE "src/utils/print.asm"
+%INCLUDE "src/utils/command.asm"
 
-    gdt_code:
-        dw 0FFFFh
-        dw 0
-        db 0
-        db 10011010b
-        db 11001111b
-        db 0
+Main:
+    call Segmen
+    call Stack
 
-    gdt_data:
-        dw 0FFFFh
-        dw 0
-        db 0
-        db 10010010b
-        db 11001111b
-        db 0
+    call cls
+    
+    mov si, welcome_sys
+    call print
 
-gdt_end:
-gdt_desc:
-    dw gdt_end - gdt - 1
-    dd gdt
+    mov si, welcome_sys2
+    call println
 
-[BITS 32]
-PModeMain:
-    ; data segment registers
-    mov ax, 10h
-    mov ds, ax
+    mov si, welcome_sys3
+    call print
+
+    mov si, info1
+    call println
+
+    call newln
+
+    mov si, prompt_symb
+    call println
+
+    ; Begin typing loop
+    call command
+
+    mov si, haltedmsg
+    call println
+
+    jmp .hang
+
+.hang:
+    cli
+    hlt
+    jmp $
+
+Stack:
+    mov ax, 0x0200b
     mov ss, ax
-    mov esp, 0x90000   ; stack pointer
+    mov sp, 0x0300b
+ret
 
-    ; clear screen and make it blue omg
-    mov eax, 0xB8000   ; address of VGA text buffer
-    mov ecx, 80*25     ; number of characters on the screen
-    mov edi, eax       ; destination pointer
-    xor eax, eax       ; ' ' character
-    mov ah, 1Bh        ; blue attribute
-    rep stosw          ; fill screen with spaces and blue attribute
+Segmen:
+    mov ax, es
+    mov ds, ax
+ret
 
-    mov eax, 0xB8000   ; address of VGA text buffer
-    mov edi, eax       ; destination pointer
-    mov esi, msg       ; source pointer (address of string)
-    mov ecx, msg_len   ; string length
-    cld                ; clear direction flag (forward direction)
-    mov ah, 1Bh        ; attribute byte (bright magenta on blue background)
+welcome_sys db 'Welcome to System!', 0
+welcome_sys2 db "I'm using println,", 0
+welcome_sys3 db " and I'm using print!", 0
 
+info1 db "Type 'help' for a list of commands.", 0
 
-copy_loop:
-    lodsb              ; load byte from string into AL, increment SI
-    stosw              ; store character and attribute into VGA text buffer, increment DI
-    loop copy_loop     ; repeat until ECX becomes zero
-
-
-
-hang:
-    jmp hang
-
-msg db 'Hello, World!', 0   ; null-terminated string
-msg_len equ $ - msg           ; length of the string (excluding null terminator)
+prompt_symb db "C:/>", 0
+haltedmsg db 'System has halted!', 0
