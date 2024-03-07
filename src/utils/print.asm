@@ -15,17 +15,25 @@ print:
     ret ; return to start
 
 println:
-    mov ah, 02h 
-    inc dh
-    mov dl, 0
+    mov bx, 0007h
+    mov ax, 0E0Dh ; BIOS.Teletype
     int 10h
+    mov ax, 0E0Ah   ;0Ah = linefeed
+    int 10h
+
+    mov bl, 1Eh    ;color         1Eh = Yellow on Blue
+    mov ah, 09h
+    mov al, 10
+    int 10h
+
 
     jmp print
 
 newln:
-    mov ah, 02h 
-    inc dh
-    mov dl, 0
+    mov bx,0007h
+    mov ax, 0E0Dh ; BIOS.Teletype
+    int 10h
+    mov ax,0E0Ah   ;0Ah = linefeed
     int 10h
 
     ret
@@ -37,7 +45,7 @@ cls:
 
     ; For changing colors
     mov ah, 0x06
-    ; Changes to white text on blue background
+    ; Changes to white text on black background
     mov bh, 0x0F
     mov ch, 00d     ; start row
     mov cl, 00d	    ; start col

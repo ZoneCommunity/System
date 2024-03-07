@@ -134,6 +134,7 @@ command:
 cmd_help db 'help', 0
 cmd_ver db 'ver', 0
 cmd_halt db 'halt', 0
+cmd_shutdown db 'shutdown', 0
 
 ; Command outputs
 cmdout_help_1 db '---          Help menu          ---', 0
