@@ -1,11 +1,8 @@
 print:
-    mov bl, 1Eh    ;color         1Eh = Yellow on Blue
-    mov ah, 09h
-    int 10h
-
     mov ah, 0Eh
 
 .repeat:
+    mov ah, 0Eh
     ; lodsb loads the next character from si
     lodsb
     ; acts as "if else" in a way
@@ -24,8 +21,8 @@ println:
     int 10h
     mov ax, 0E0Ah   ;0Ah = linefeed
     int 10h
-    mov bl, 1Eh    ;color         1Eh = Yellow on Blue
-    mov ah, 09h
+    mov ah, 0x06
+    mov bh, 1Eh    ;color         1Eh = Yellow on Blue
     int 10h
 
 
@@ -38,8 +35,8 @@ newln:
     int 10h
     mov ax,0E0Ah   ;0Ah = linefeed
     int 10h
-        mov bl, 1Eh    ;color         1Eh = Yellow on Blue
-    mov ah, 09h
+    mov ah, 0x06
+    mov bh, 1Eh    ;color         1Eh = Yellow on Blue
     int 10h
 
 

@@ -144,7 +144,7 @@ cmdout_help_4 db 'halt      > Halts the system', 0
 
 ; OS getting too big, needs a proper bootloader and disk features
 
-cmdout_ver db 'System version 0.0.1', 0
+cmdout_ver db 'System version 0.0.2', 0
 
 ; --- fail ---
 cmd_none db '', 0
