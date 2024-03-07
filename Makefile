@@ -10,7 +10,7 @@ BUILDDIR=build
 ISODIR=iso
 
 # Define input and output files
-BOOT_SRC=$(SRCDIR)/bootx.asm # change this to boot later
+BOOT_SRC=$(SRCDIR)/boot.asm # change this to boot later
 KERNEL_SRC=$(SRCDIR)/kernel.asm
 
 BOOT_BIN=$(BUILDDIR)/boot.bin
@@ -19,7 +19,7 @@ OS_BIN=$(BUILDDIR)/os.bin
 ISO_FILE=$(ISODIR)/os.iso
 
 # Default target
-all: build_boot build_kernel merge_boot_kernel run_os
+all: clean build_boot build_kernel merge_boot_kernel run_os
 
 # Rule to compile Boot.asm to boot.bin
 $(BOOT_BIN): $(BOOT_SRC)

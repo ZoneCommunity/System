@@ -38,7 +38,7 @@ cls:
     ; For changing colors
     mov ah, 0x06
     ; Changes to white text on blue background
-    mov bh, 0x1F
+    mov bh, 0x0F
     mov ch, 00d     ; start row
     mov cl, 00d	    ; start col
     mov dh, 24d	    ; end of row
