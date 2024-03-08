@@ -5,7 +5,7 @@ NASM=nasm
 NASMFLAGS=-f bin
 
 # Define source and build directories
-SRCDIR=src32
+SRCDIR=src
 BUILDDIR=build
 ISODIR=iso
 

@@ -26,7 +26,7 @@ Main:
     mov si, welcome_sys2
     call println
 
-    mov si, welcome_sys3
+    mov si, sys_ver
     call print
 
     mov si, info1
@@ -62,8 +62,8 @@ Segmen:
 ret
 
 welcome_sys db 'Welcome to System!', 0
-welcome_sys2 db "I'm using println,", 0
-welcome_sys3 db " and I'm using print!", 0
+welcome_sys2 db "System version ", 0
+sys_ver db "0.0.2", 0
 
 info1 db "Type 'help' for a list of commands.", 0
 
