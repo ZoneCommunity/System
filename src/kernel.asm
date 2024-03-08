@@ -67,5 +67,5 @@ welcome_sys3 db " and I'm using print!", 0
 
 info1 db "Type 'help' for a list of commands.", 0
 
-prompt_symb db "C:/>", 0
+prompt_symb db "system# > ", 0
 haltedmsg db 'System has halted!', 0
