@@ -138,6 +138,11 @@ command:
     ret
 
 .cmdshutdown:
+    mov cx, 0FH
+    mov dx, 4240H
+    mov ah, 86H
+    int 15H
+
     mov ax, 5307h
     mov cx, 3
     mov bx, 1
@@ -176,7 +181,6 @@ loadtui:
     mov word[segmentaddr], TUISEG ; kernel seg
     mov word[segmentoffset], TUIOFFSET ; kernel offset
     call DiskRead
-
 
 ; Command inputs
 cmd_help db 'help', 0
