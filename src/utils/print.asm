@@ -17,20 +17,38 @@ print:
 
 println:
     mov bx, 0007h
-    mov ax, 0E0Dh ; BIOS.Teletype
+    mov ax, 0E0Dh
     int 10h
-    mov ax, 0E0Ah   ;0Ah = linefeed
+    mov ax, 0E0Ah
+    int 10h
+
+    ; For changing colors
+    mov ah, 0x06
+    mov bh, 0x0F
+    mov ch, 24d     ; start row
+    mov cl, 00d	    ; start col
+    mov dh, 24d	    ; end of row
+    mov dl, 79d	    ; end of col
     int 10h
 
     jmp print
 
 newln:
-    mov bx,0007h
-    mov ax, 0E0Dh ; BIOS.Teletype
+    mov bx, 0007h
+    mov ax, 0E0Dh
     int 10h
-    mov ax,0E0Ah   ;0Ah = linefeed
+    mov ax, 0E0Ah
     int 10h
 
+    ; For changing colors
+    mov ah, 0x06
+    mov bh, 0x0F
+    mov ch, 24d     ; start row
+    mov cl, 00d	    ; start col
+    mov dh, 24d	    ; end of row
+    mov dl, 79d	    ; end of col
+    int 10h
+    
     ret
 
 cls:
@@ -39,14 +57,13 @@ cls:
     int 0x10
 
     ; For changing colors
-    ;mov ah, 0x06
-    ; Changes to white text on black background
-    ;mov bh, 0x0F
-    ;mov ch, 00d     ; start row
-    ;mov cl, 00d	    ; start col
-    ;mov dh, 24d	    ; end of row
-    ;mov dl, 79d	    ; end of col
-    ;int 10h
+    mov ah, 0x06
+    mov bh, 0x0F
+    mov ch, 00d     ; start row
+    mov cl, 00d	    ; start col
+    mov dh, 24d	    ; end of row
+    mov dl, 79d	    ; end of col
+    int 10h
 
     ; then we move the cursor
     mov ah, 0x02	; move cursor Instruction
