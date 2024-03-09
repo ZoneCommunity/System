@@ -1,4 +1,5 @@
-%INCLUDE "src/tui/tui_init.asm"
+%INCLUDE "src/disk/disk.asm"
+%INCLUDE "src/disk/memory.asm"
 
 command:
     
@@ -128,8 +129,8 @@ command:
     ret
 
 .cmdtui:
-    jmp tui_start
-    ret
+    call loadtui
+    jmp TUIADDR
 
 ; end
 .fail:
@@ -153,26 +154,13 @@ command:
     
     jmp command
 
-cmpstr:
-    cmp bx, cx      ; Compare loop counter with buffer length
-    je .strings_equal  ; If they are equal, strings are equal
-    mov al, [si]    ; Load byte from source string
-    mov dl, [di]    ; Load byte from destination string
-    cmp al, dl      ; Compare bytes
-    jne .fail       ; Jump if not equal
-    inc si          ; Increment source pointer
-    inc di          ; Increment destination pointer
-    inc bx          ; Increment loop counter
-    jmp cmpstr  ; Jump back to loop
-
-.strings_equal:
-    jmp .end
-
-.fail:
-    ret
-
-.end:
-    hlt
+loadtui:
+    mov byte[sector], 2
+    mov byte[drive], 80h
+    mov byte[sectornum], 2
+    mov word[segmentaddr], TUISEG ; kernel seg
+    mov word[segmentoffset], TUIOFFSET ; kernel offset
+    call DiskRead
 
 
 ; Command inputs
