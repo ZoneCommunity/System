@@ -48,7 +48,7 @@ newln:
     mov dh, 24d	    ; end of row
     mov dl, 79d	    ; end of col
     int 10h
-    
+
     ret
 
 cls:

@@ -92,6 +92,15 @@ command:
     mov [buffer_len], cl
     mov si, buffer
     mov cx, [buffer_len]
+    mov di, cmd_shutdown
+    repe cmpsb
+    je .cmdshutdown
+
+    mov si, buffer
+    mov cx, [buffer_len]
+    mov [buffer_len], cl
+    mov si, buffer
+    mov cx, [buffer_len]
     mov di, cmd_tui
     repe cmpsb
     je .cmdtui
@@ -127,6 +136,12 @@ command:
 .cmdhalt:
     call newln
     ret
+
+.cmdshutdown:
+    mov ax, 5307h
+    mov cx, 3
+    mov bx, 1
+    int 15h
 
 .cmdtui:
     call loadtui
