@@ -126,10 +126,13 @@ command:
     jmp .end
 
 .cmdver:
-    mov si, cmdout_ver
+    call newln
+    mov si, cmdout_ver_1
     call println
     mov si, sys_ver
     call print
+    mov si, cmdout_ver_2
+    call println
     call newln
     jmp .end
 
@@ -175,12 +178,7 @@ command:
     jmp command
 
 loadtui:
-    mov byte[sector], 2
-    mov byte[drive], 80h
-    mov byte[sectornum], 2
-    mov word[segmentaddr], TUISEG ; kernel seg
-    mov word[segmentoffset], TUIOFFSET ; kernel offset
-    call DiskRead
+
 
 ; Command inputs
 cmd_help db 'help', 0
@@ -189,10 +187,6 @@ cmd_halt db 'halt', 0
 cmd_shutdown db 'shutdown', 0
 cmd_tui db 'tui', 0
 
-cmd_help_len equ $ - cmd_help - 1       ; Calculate length of cmd_help
-cmd_ver_len equ $ - cmd_ver - 1         ; Calculate length of cmd_ver
-cmd_halt_len equ $ - cmd_halt - 1       ; Calculate length of cmd_halt
-cmd_shutdown_len equ $ - cmd_shutdown - 1 ; Calculate length of cmd_shutdown
 
 ; Command outputs
 cmdout_help_1 db '---          Help menu          ---', 0
@@ -204,7 +198,8 @@ cmdout_help_6 db 'tui       > Enables the TUI mode', 0
 
 ; OS getting too big, needs a proper bootloader and disk features
 
-cmdout_ver db 'System version ', 0
+cmdout_ver_1 db 'Reported System version: ', 0
+cmdout_ver_2 db 'Copyright 2024 ZoneCommunity', 0
 
 ; --- fail ---
 cmd_none db '', 0
