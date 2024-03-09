@@ -1,8 +1,15 @@
+;[BITS 16]
+;[ORG 0x1000]
+
 ; TUI mode
 tui_start:
     call loadwelcome
     call loadtext
     jmp inputreciever
+
+    ; call cls
+    
+    ret
 
 loadwelcome:
     ; clear the screen
@@ -42,6 +49,7 @@ loadtext:
     
     mov si, menubar_1
     call print
+
     ret
     
 
@@ -62,10 +70,33 @@ inputreciever:
     ;mov ah, 0x00  ; Read the extended key code
     ;int 16h       ; Put the extended key code into AL
 
-    mov ah, 0x0e
-    int 10h
+    ;mov ah, 0x0e
+    ;int 10h
 
+    ; Assume al contains the scan code of the pressed key
+    cmp ah, 0x4B  ; Compare with left arrow scan code
+    je .left_pressed  ; Jump if equal to left arrow scan code
+    cmp ah, 0x4D  ; Compare with right arrow scan code
+    je .right_pressed  ; Jump if equal to right arrow scan code
+
+    cmp al, 27
+    ret
+
+    jmp .readkeys
+
+.left_pressed:
+    mov si, left
+    call println
+    
+    jmp .readkeys
+.right_pressed:
+    mov si, right
+    call println
+    
     jmp .readkeys
 
 ; Strings
 menubar_1 db 'Welcome app -------------------------------------------------------------- About', 0
+
+left db 'left', 0
+right db 'right', 0
