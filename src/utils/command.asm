@@ -1,3 +1,5 @@
+%INCLUDE "src/tui/tui_init.asm"
+
 command:
     
 .readkeys:
@@ -44,7 +46,9 @@ command:
     int 10h
     jmp .readkeys
 
+
 .handler:
+
     ; Work around for when nothing is entered
     mov si, buffer
     mov cx, [buffer_len]
@@ -82,6 +86,15 @@ command:
     repe cmpsb
     je .cmdhalt
 
+    mov si, buffer
+    mov cx, [buffer_len]
+    mov [buffer_len], cl
+    mov si, buffer
+    mov cx, [buffer_len]
+    mov di, cmd_tui
+    repe cmpsb
+    je .cmdtui
+
     mov si, failure_cmd
     jmp .fail
 
@@ -95,17 +108,27 @@ command:
     call println
     mov si, cmdout_help_4
     call println
+    mov si, cmdout_help_5
+    call println
+    mov si, cmdout_help_6
+    call println
     call newln
     jmp .end
 
 .cmdver:
     mov si, cmdout_ver
     call println
+    mov si, sys_ver
+    call print
     call newln
     jmp .end
 
 .cmdhalt:
     call newln
+    ret
+
+.cmdtui:
+    jmp tui_start
     ret
 
 ; end
@@ -130,21 +153,51 @@ command:
     
     jmp command
 
+cmpstr:
+    cmp bx, cx      ; Compare loop counter with buffer length
+    je .strings_equal  ; If they are equal, strings are equal
+    mov al, [si]    ; Load byte from source string
+    mov dl, [di]    ; Load byte from destination string
+    cmp al, dl      ; Compare bytes
+    jne .fail       ; Jump if not equal
+    inc si          ; Increment source pointer
+    inc di          ; Increment destination pointer
+    inc bx          ; Increment loop counter
+    jmp cmpstr  ; Jump back to loop
+
+.strings_equal:
+    jmp .end
+
+.fail:
+    ret
+
+.end:
+    hlt
+
+
 ; Command inputs
 cmd_help db 'help', 0
 cmd_ver db 'ver', 0
 cmd_halt db 'halt', 0
 cmd_shutdown db 'shutdown', 0
+cmd_tui db 'tui', 0
+
+cmd_help_len equ $ - cmd_help - 1       ; Calculate length of cmd_help
+cmd_ver_len equ $ - cmd_ver - 1         ; Calculate length of cmd_ver
+cmd_halt_len equ $ - cmd_halt - 1       ; Calculate length of cmd_halt
+cmd_shutdown_len equ $ - cmd_shutdown - 1 ; Calculate length of cmd_shutdown
 
 ; Command outputs
 cmdout_help_1 db '---          Help menu          ---', 0
 cmdout_help_2 db 'ver       > Displays System version', 0
 cmdout_help_3 db 'help      > Shows help menu for CMD', 0
 cmdout_help_4 db 'halt      > Halts the system', 0
+cmdout_help_5 db 'shutdown  > Turns off your PC', 0
+cmdout_help_6 db 'tui       > Enables the TUI mode', 0
 
 ; OS getting too big, needs a proper bootloader and disk features
 
-cmdout_ver db 'System version 0.0.2', 0
+cmdout_ver db 'System version ', 0
 
 ; --- fail ---
 cmd_none db '', 0

@@ -63,7 +63,7 @@ ret
 
 welcome_sys db 'Welcome to System!', 0
 welcome_sys2 db "System version ", 0
-sys_ver db "0.0.2", 0
+sys_ver db "0.0.3", 0
 
 info1 db "Type 'help' for a list of commands.", 0
 
