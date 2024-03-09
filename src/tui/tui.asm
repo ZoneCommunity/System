@@ -4,6 +4,9 @@
 
 ; TUI mode
 tui_start:
+    call Segmen
+    call Stack
+
     call loadwelcome
     call loadtext
     jmp inputreciever
@@ -166,6 +169,19 @@ scrollup:
     mov dl, 79       ; DL = 79 (rightmost column)
     int 10h          ; Call BIOS video interrupt to scroll window up
     ret
+
+
+Stack:
+    mov ax, 0x0200b
+    mov ss, ax
+    mov sp, 0x0300b
+ret
+
+Segmen:
+    mov ax, es
+    mov ds, ax
+ret
+
 
 ; Strings
 menubar_1 db 'Welcome app -------------------------------------------------------------- About', 0
