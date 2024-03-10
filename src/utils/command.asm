@@ -96,9 +96,22 @@ command:
     repe cmpsb
     je .cmdshutdown
 
+    mov si, buffer
+    mov cx, [buffer_len]
+    mov [buffer_len], cl
+    mov si, buffer
+    mov cx, [buffer_len]
+    mov di, cmd_reboot
+    repe cmpsb
+    je .cmdreboot
+
     mov si, failure_cmd
     jmp .fail
 
+.cmdreboot:
+    db 0x0ea
+    dw 0x0000
+    dw 0xffff
 
 .cmdhelp:
     mov si, cmdout_help_1
@@ -110,6 +123,8 @@ command:
     mov si, cmdout_help_4
     call println
     mov si, cmdout_help_5
+    call println
+    mov si, cmdout_help_6
     call println
     call newln
     jmp .end
@@ -175,15 +190,17 @@ loadtui:
 cmd_help db 'help', 0
 cmd_ver db 'ver', 0
 cmd_halt db 'halt', 0
+cmd_reboot db 'reboot', 0
 cmd_shutdown db 'shutdown', 0
 
 
 ; Command outputs
 cmdout_help_1 db '---          Help menu          ---', 0
 cmdout_help_2 db 'ver       > Displays System version', 0
-cmdout_help_3 db 'help      > Shows help menu for CMD', 0
+cmdout_help_3 db 'help      > Shows help menu', 0
 cmdout_help_4 db 'halt      > Halts the system', 0
-cmdout_help_5 db 'shutdown  > Turns off your PC', 0
+cmdout_help_5 db 'reboot    > Restarts the OS', 0
+cmdout_help_6 db 'shutdown  > Turns off your PC', 0
 
 cmdout_shutdown_1 db 'Shutting down in 1 second...', 0
 ; OS getting too big, needs a proper bootloader and disk features
