@@ -144,9 +144,7 @@ command:
     mov bx, 1
     int 15h
 
-.cmdtui:
-    call loadtui
-    jmp TUIADDR
+
 
 ; end
 .fail:

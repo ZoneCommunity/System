@@ -1,8 +1,16 @@
-; System bootloader
 
-bits 16
-org 0
-start:  jmp Main
+;*********************************************
+;	Boot1.asm
+;		- A Simple Bootloader
+;
+;	Operating Systems Development Series
+;*********************************************
+
+bits	16						; we are in 16 bit real mode
+
+org	0						; we will set regisers later
+
+start:	jmp	main					; jump to start of bootloader
 
 ;*********************************************
 ;	BIOS Parameter Block
@@ -11,7 +19,7 @@ start:  jmp Main
 ; BPB Begins 3 bytes from start. We do a far jump, which is 3 bytes in size.
 ; If you use a short jump, add a "nop" after it to offset the 3rd byte.
 
-bpbOEM			db "System  "			; OEM identifier
+bpbOEM			db "My OS   "			; OEM identifier (Cannot exceed 8 bytes!)
 bpbBytesPerSector:  	DW 512
 bpbSectorsPerCluster: 	DB 1
 bpbReservedSectors: 	DW 1
@@ -30,7 +38,6 @@ bsExtBootSignature: 	DB 0x29
 bsSerialNumber:	        DD 0xa0a1a2a3
 bsVolumeLabel: 	        DB "MOS FLOPPY "
 bsFileSystem: 	        DB "FAT12   "
-;*********************************************
 
 ;************************************************;
 ;	Prints a string
