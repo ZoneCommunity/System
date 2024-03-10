@@ -5,7 +5,7 @@
 section .bss
     buffer resb 100    ; Define a buffer to store input (maximum size 255 bytes)
     buffer_len resb 1  ; Variable to store the length of input
-
+    
 section .text
 
 jmp Main
@@ -14,6 +14,9 @@ jmp Main
 %INCLUDE "src/utils/print.asm"
 %INCLUDE "src/utils/command.asm"
 %INCLUDE "src/utils/setup.asm"
+
+%INCLUDE "src/zonefs/zonefs.asm"
+
 
 Main:
     call Segmen
@@ -25,6 +28,8 @@ Main:
     call print
     mov si, sys_ver
     call print
+    mov al, '!'
+    int 10h
 
     mov si, info1
     call println
@@ -68,14 +73,16 @@ Segmen:
 ret
 
 welcome_sys db 'Welcome to System ', 0
-sys_ver db "0.0.4!", 0
+sys_ver db "0.0.4", 0
 
 usera db 'Enter your username: ', 0
 
-info1 db "Type 'help' for commands.", 0
+info1 db "Type 'help' for a list of commands.", 0
 
 prompt_symb db "@system# > ", 0
 haltedmsg db 'System has halted!', 0
+
+current_directory resb 255
 
 uname resb 20
 uname_len resb 1

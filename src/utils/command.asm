@@ -72,8 +72,24 @@ command:
     repe cmpsb           ; Compare the first 4 characters of buffer with cmd_echo
     je .cmdshutdown          ; If equal, jump to .cmdecho
 
+    mov si, buffer        ; Load the address of buffer into SI
+    mov di, cmd_ver     ; Load the address of cmd_echo into DI
+    mov cx, 3            ; Set CX to 4 to compare the first 4 characters
+    repe cmpsb           ; Compare the first 4 characters of buffer with cmd_echo
+    je .cmdver          ; If equal, jump to .cmdecho
+
     mov si, failure_cmd
     jmp .fail
+
+.cmdver:
+    mov si, cmdout_ver_1
+    call println
+    mov si, sys_ver
+    call print
+    mov si, cmdout_ver_2
+    call println
+
+    jmp .end
 
 .cmdreboot:
     db 0x0ea
@@ -94,6 +110,8 @@ command:
     mov si, cmdout_help_5
     call println
     mov si, cmdout_help_6
+    call println
+    mov si, cmdout_help_7
     call println
     jmp .end
 
@@ -154,6 +172,7 @@ cmd_help db 'help', 0
 cmd_echo db 'echo ', 0
 cmd_cls db 'cls', 0
 cmd_shutdown db 'shutdown', 0
+cmd_ver db 'ver', 0
 
 cmd_extr db '-r', 0
 
@@ -164,9 +183,14 @@ cmdout_help_2 db 'help     > Displays the available commands.', 0
 cmdout_help_3 db 'echo     > Repeats the entered text.', 0
 cmdout_help_5 db 'cls      > Clears the screen.', 0
 cmdout_help_6 db 'shutdown > Turns off your PC. Run -r to reboot.', 0
+cmdout_help_7 db 'ver      > Displays the system version.', 0
+
+cmdout_ver_1 db 'System version: ', 0
+cmdout_ver_2 db '(C) ZoneCommunity 2024', 0
+
 
 ; OS getting too big, needs a proper bootloader and disk features
 
 ; --- fail ---
 cmd_none db '', 0
-failure_cmd db "Invalid command, type 'help' for commands.", 0
+failure_cmd db "Invalid command, type 'help' for a list of commands.", 0
