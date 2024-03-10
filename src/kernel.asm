@@ -48,6 +48,7 @@ Main:
 .hang:
     cli
     hlt
+    
     jmp $
 
 Stack:

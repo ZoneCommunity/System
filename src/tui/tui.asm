@@ -1,6 +1,9 @@
 [BITS 16]
 [ORG 0x0000]
 
+; hi katmat big slay wateg7yhudjiwnkslm,
+; this code sucks ignore ethe tui it doesnt work anymore its bad
+
 
 ; TUI mode
 tui_start:

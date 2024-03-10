@@ -51,11 +51,11 @@ merge_boot_kernel: $(BOOT_BIN) $(KERNEL_BIN)
 	dd if=build/os.bin of=build/os.img
 	mkdir -v iso
 	mv -v build/os.img iso
-	mkisofs -b os.img -no-emul-boot -boot-load-size 4 -boot-info-table -o iso/os.iso iso/
+	mkisofs -b os.img -no-emul-boot -o iso/os.iso iso/
 
 # Rule to run os.bin with qemu
 run_os: $(OS_BIN)
-	qemu-system-x86_64 build/os.bin
+	qemu-system-x86_64 iso/os.img
 
 # Clean
 clean:
