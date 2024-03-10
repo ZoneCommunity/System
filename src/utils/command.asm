@@ -1,5 +1,3 @@
-%INCLUDE "src/disk/disk.asm"
-%INCLUDE "src/disk/memory.asm"
 
 command:
     
@@ -49,61 +47,30 @@ command:
 
 
 .handler:
+    mov si, buffer        ; Load the address of buffer into SI
+    
+    mov di, cmd_help     ; Load the address of cmd_echo into DI
+    mov cx, 4            ; Set CX to 4 to compare the first 4 characters
+    repe cmpsb           ; Compare the first 4 characters of buffer with cmd_echo
+    je .cmdhelp          ; If equal, jump to .cmdecho
 
-    ; Work around for when nothing is entered
-    mov si, buffer
-    mov cx, [buffer_len]
-    mov [buffer_len], cl
-    mov si, buffer
-    mov cx, [buffer_len]
-    mov di, cmd_none
-    repe cmpsb
-    je .fail
+    mov si, buffer        ; Load the address of buffer into SI
+    mov di, cmd_echo     ; Load the address of cmd_echo into DI
+    mov cx, 5            ; Set CX to 4 to compare the first 4 characters
+    repe cmpsb           ; Compare the first 4 characters of buffer with cmd_echo
+    je .cmdecho          ; If equal, jump to .cmdecho
 
-    mov si, buffer
-    mov cx, [buffer_len]
-    mov [buffer_len], cl
-    mov si, buffer
-    mov cx, [buffer_len]
-    mov di, cmd_help
-    repe cmpsb
-    je .cmdhelp
+    mov si, buffer        ; Load the address of buffer into SI
+    mov di, cmd_cls     ; Load the address of cmd_echo into DI
+    mov cx, 3            ; Set CX to 4 to compare the first 4 characters
+    repe cmpsb           ; Compare the first 4 characters of buffer with cmd_echo
+    je .cmdcls          ; If equal, jump to .cmdecho
 
-    mov si, buffer
-    mov cx, [buffer_len]
-    mov [buffer_len], cl
-    mov si, buffer
-    mov cx, [buffer_len]
-    mov di, cmd_ver
-    repe cmpsb
-    je .cmdver
-
-    mov si, buffer
-    mov cx, [buffer_len]
-    mov [buffer_len], cl
-    mov si, buffer
-    mov cx, [buffer_len]
-    mov di, cmd_halt
-    repe cmpsb
-    je .cmdhalt
-
-    mov si, buffer
-    mov cx, [buffer_len]
-    mov [buffer_len], cl
-    mov si, buffer
-    mov cx, [buffer_len]
-    mov di, cmd_shutdown
-    repe cmpsb
-    je .cmdshutdown
-
-    mov si, buffer
-    mov cx, [buffer_len]
-    mov [buffer_len], cl
-    mov si, buffer
-    mov cx, [buffer_len]
-    mov di, cmd_reboot
-    repe cmpsb
-    je .cmdreboot
+    mov si, buffer        ; Load the address of buffer into SI
+    mov di, cmd_shutdown     ; Load the address of cmd_echo into DI
+    mov cx, 8            ; Set CX to 4 to compare the first 4 characters
+    repe cmpsb           ; Compare the first 4 characters of buffer with cmd_echo
+    je .cmdshutdown          ; If equal, jump to .cmdecho
 
     mov si, failure_cmd
     jmp .fail
@@ -113,6 +80,10 @@ command:
     dw 0x0000
     dw 0xffff
 
+.cmdcls:
+    call cls
+    jmp .end
+
 .cmdhelp:
     mov si, cmdout_help_1
     call println
@@ -120,39 +91,28 @@ command:
     call println
     mov si, cmdout_help_3
     call println
-    mov si, cmdout_help_4
-    call println
     mov si, cmdout_help_5
     call println
     mov si, cmdout_help_6
     call println
-    call newln
     jmp .end
 
-.cmdver:
-    call newln
-    mov si, cmdout_ver_1
+.cmdecho:
+    mov si, buffer
+    add si, 5
     call println
-    mov si, sys_ver
-    call print
-    mov si, cmdout_ver_2
-    call println
-    call newln
     jmp .end
 
 .cmdhalt:
-    call newln
     ret
 
 .cmdshutdown:
-    mov si, cmdout_shutdown_1
-    call println
-    call newln
-
-    mov cx, 0FH
-    mov dx, 4240H
-    mov ah, 86H
-    int 15H
+    mov si, buffer        ; Load the address of buffer into SI
+    add si, 9
+    mov di, cmd_extr     ; Load the address of cmd_echo into DI
+    mov cx, 2            ; Set CX to 4 to compare the first 4 characters
+    repe cmpsb           ; Compare the first 4 characters of buffer with cmd_echo
+    je .cmdreboot          ; If equal, jump to .cmdecho
 
     mov ax, 5307h
     mov cx, 3
@@ -165,7 +125,6 @@ command:
 .fail:
     mov si, failure_cmd
     call println
-    call newln
     jmp .end
     
 .end:
@@ -178,8 +137,12 @@ command:
     ; Reset buffer length
     mov byte [buffer_len], 0  ; Reset buffer length to 0
 
-    mov si, prompt_symb
+    call newln
+
+    mov si, uname
     call println
+    mov si, prompt_symb
+    call print
     
     jmp command
 
@@ -188,26 +151,22 @@ loadtui:
 
 ; Command inputs
 cmd_help db 'help', 0
-cmd_ver db 'ver', 0
-cmd_halt db 'halt', 0
-cmd_reboot db 'reboot', 0
+cmd_echo db 'echo ', 0
+cmd_cls db 'cls', 0
 cmd_shutdown db 'shutdown', 0
+
+cmd_extr db '-r', 0
 
 
 ; Command outputs
-cmdout_help_1 db '---          Help menu          ---', 0
-cmdout_help_2 db 'ver       > Displays System version', 0
-cmdout_help_3 db 'help      > Shows help menu', 0
-cmdout_help_4 db 'halt      > Halts the system', 0
-cmdout_help_5 db 'reboot    > Restarts the OS', 0
-cmdout_help_6 db 'shutdown  > Turns off your PC', 0
+cmdout_help_1 db '--------           Help menu           --------', 0
+cmdout_help_2 db 'help     > Displays the available commands.', 0
+cmdout_help_3 db 'echo     > Repeats the entered text.', 0
+cmdout_help_5 db 'cls      > Clears the screen.', 0
+cmdout_help_6 db 'shutdown > Turns off your PC. Run -r to reboot.', 0
 
-cmdout_shutdown_1 db 'Shutting down in 1 second...', 0
 ; OS getting too big, needs a proper bootloader and disk features
-
-cmdout_ver_1 db 'Reported System version: ', 0
-cmdout_ver_2 db 'Copyright 2024 ZoneCommunity', 0
 
 ; --- fail ---
 cmd_none db '', 0
-failure_cmd db 'Invalid command or file name.', 0
+failure_cmd db "Invalid command, type 'help' for commands.", 0

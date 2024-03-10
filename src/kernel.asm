@@ -3,7 +3,7 @@
 [ORG KERNELOFFSET]
 
 section .bss
-    buffer resb 255    ; Define a buffer to store input (maximum size 255 bytes)
+    buffer resb 100    ; Define a buffer to store input (maximum size 255 bytes)
     buffer_len resb 1  ; Variable to store the length of input
 
 section .text
@@ -13,6 +13,7 @@ jmp Main
 ; Include external code
 %INCLUDE "src/utils/print.asm"
 %INCLUDE "src/utils/command.asm"
+%INCLUDE "src/utils/setup.asm"
 
 Main:
     call Segmen
@@ -22,10 +23,6 @@ Main:
     
     mov si, welcome_sys
     call print
-
-    mov si, welcome_sys2
-    call println
-
     mov si, sys_ver
     call print
 
@@ -34,8 +31,16 @@ Main:
 
     call newln
 
-    mov si, prompt_symb
+    mov si, usera
     call println
+
+    ; Get the username
+    call username
+
+    mov si, uname
+    call println
+    mov si, prompt_symb
+    call print
 
     ; Begin typing loop
     call command
@@ -62,11 +67,15 @@ Segmen:
     mov ds, ax
 ret
 
-welcome_sys db 'Welcome to System!', 0
-welcome_sys2 db "System version ", 0
-sys_ver db "0.0.4", 0
+welcome_sys db 'Welcome to System ', 0
+sys_ver db "0.0.4!", 0
 
-info1 db "Type 'help' for a list of commands.", 0
+usera db 'Enter your username: ', 0
 
-prompt_symb db "system# > ", 0
+info1 db "Type 'help' for commands.", 0
+
+prompt_symb db "@system# > ", 0
 haltedmsg db 'System has halted!', 0
+
+uname resb 20
+uname_len resb 1
