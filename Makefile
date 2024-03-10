@@ -55,7 +55,7 @@ merge_boot_kernel: $(BOOT_BIN) $(KERNEL_BIN)
 
 # Rule to run os.bin with qemu
 run_os: $(OS_BIN)
-	qemu-system-x86_64 -cdrom iso/os.iso
+	qemu-system-x86_64 build/os.bin
 
 # Clean
 clean:
