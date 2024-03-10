@@ -24,7 +24,7 @@ println:
 
     ; For changing colors
     mov ah, 0x06
-    mov bh, 0x0F
+    mov bh, 0x1F
     mov ch, 24d     ; start row
     mov cl, 00d	    ; start col
     mov dh, 24d	    ; end of row
@@ -42,7 +42,7 @@ newln:
 
     ; For changing colors
     mov ah, 0x06
-    mov bh, 0x0F
+    mov bh, 0x1F
     mov ch, 24d     ; start row
     mov cl, 00d	    ; start col
     mov dh, 24d	    ; end of row
@@ -60,7 +60,7 @@ cls:
 
     ; For changing colors
     mov ah, 0x06
-    mov bh, 0x0F
+    mov bh, 0x1F
     mov ch, 00d     ; start row
     mov cl, 00d	    ; start col
     mov dh, 24d	    ; end of row
