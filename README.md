@@ -7,5 +7,4 @@ This includes:
 - Many commands
 
 
-![image](https://github.com/ZoneCommunity/System/assets/65190117/91bdbf12-c2e8-46c3-a02a-01975d1db9d8)
-
+<img width="832" alt="Screenshot 2024-03-10 at 9 10 56 AM" src="https://github.com/ZoneCommunity/System/assets/65190117/4295e643-2e7e-4d6c-b6d2-44c3758119d9">
