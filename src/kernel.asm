@@ -1,72 +1,30 @@
-%INCLUDE "src/disk/memory.asm"
-[BITS 16]
-
-
-section .bss
-    buffer resb 255    ; Define a buffer to store input (maximum size 255 bytes)
-    buffer_len resb 1  ; Variable to store the length of input
-
-section .text
+[org 0x1000]
+[bits 16]
 
 jmp Main
 
-; Include external code
-%INCLUDE "src/utils/print.asm"
-%INCLUDE "src/utils/command.asm"
+; This will work for now
+%include "src/Bootloader/Print.asm"
+; %include "./Kernel/VGA.asm"
+%include "src/Kernel/Shell.asm"
+
 
 Main:
-    call Segmen
-    call Stack
+    ; Clears the screen
+    mov ah, 0
+    mov al, 3
+    int 0x10
 
-    call cls
+    ; call VgaInit
+    ; mov al, 67
+    ; mov ah, 0
+    ; call VgaPrintChar
     
-    mov si, welcome_sys
-    call print
+    jmp InitShell
 
-    mov si, welcome_sys2
-    call println
-
-    mov si, sys_ver
-    call print
-
-    mov si, info1
-    call println
-
-    call newln
-
-    mov si, prompt_symb
-    call println
-
-    ; Begin typing loop
-    call command
-
-    mov si, haltedmsg
-    call println
-
-    jmp .hang
-
-.hang:
     cli
     hlt
-    
-    jmp $
 
-Stack:
-    mov ax, 0x0200b
-    mov ss, ax
-    mov sp, 0x0300b
-ret
 
-Segmen:
-    mov ax, es
-    mov ds, ax
-ret
-
-welcome_sys db 'Welcome to System!', 0
-welcome_sys2 db "System version ", 0
-sys_ver db "0.0.3", 0
-
-info1 db "Type 'help' for a list of commands.", 0
-
-prompt_symb db "system# > ", 0
-haltedmsg db 'System has halted!', 0
+; Fills 6 sectors
+times 3072 db 0
