@@ -6,7 +6,6 @@ NASMFLAGS=-f bin
 
 # Define source and build directories
 SRCDIR=src
-SRCEXTDIR=srcext
 BUILDDIR=build
 ISODIR=iso
 
@@ -21,14 +20,10 @@ KERNEL_BIN=$(BUILDDIR)/kernel.bin
 TUI_BIN=$(BUILDDIR)/tui.bin
 COMMAND_BIN=$(BUILDDIR)/command.com
 OS_BIN=$(BUILDDIR)/os.bin
-OS_IMG=$(BUILDDIR)/os.img
 ISO_FILE=$(ISODIR)/os.iso
 
-# List of files to copy from srcext to os.img
-SRCEXT_FILES=$(wildcard $(SRCEXTDIR)/*)
-
 # Default target
-all: clean build_boot build_kernel build_command build_os run_os
+all: clean build_boot build_kernel merge_boot_kernel run_os
 
 # Rule to compile Boot.asm to boot.bin
 $(BOOT_BIN): $(BOOT_SRC)
@@ -40,22 +35,27 @@ $(KERNEL_BIN): $(KERNEL_SRC)
 	@mkdir -p $(BUILDDIR)
 	$(NASM) $(NASMFLAGS) -o $@ $<
 
+# Rule to compile tui.asm to tui.bin
+$(TUI_BIN): $(TUI_SRC)
+	@mkdir -p $(BUILDDIR)
+	$(NASM) $(NASMFLAGS) -o $@ $<
+
 # Rule to compile command.asm to command.com
 $(COMMAND_BIN): $(COMMAND_SRC)
 	@mkdir -p $(BUILDDIR)
 	$(NASM) -f bin -o $@ $<
 
-# Rule to create the os.img file with the file system and copy srcext files
-$(OS_IMG): $(BOOT_BIN) $(KERNEL_BIN) $(COMMAND_BIN) $(SRCEXT_FILES)
-	dd if=/dev/zero of=$@ bs=512 count=2880
-	mformat -i $@ -f 1440 ::
-	@for file in $(BOOT_BIN) $(KERNEL_BIN) $(COMMAND_BIN) $(SRCEXT_FILES); do \
-		mcopy -i $@ $$file ::; \
-	done
+# Rule to merge bootloader.bin, kernel.bin, and command.com into os.bin
+merge_boot_kernel: $(BOOT_BIN) $(KERNEL_BIN)
+	cat $(BOOT_BIN) $(KERNEL_BIN) > $(OS_BIN)
+	dd if=build/os.bin of=build/os.img
+	mkdir -v iso
+	mv -v build/os.img iso
+	mkisofs -b os.img -no-emul-boot -o iso/os.iso iso/
 
-# Rule to run os.img with qemu
-run_os: $(OS_IMG)
-	qemu-system-x86_64 $<
+# Rule to run os.bin with qemu
+run_os: $(OS_BIN)
+	qemu-system-x86_64 iso/os.img
 
 # Clean
 clean:
@@ -68,10 +68,10 @@ build_boot: $(BOOT_BIN)
 # Build kernel
 build_kernel: $(KERNEL_BIN)
 
+# Build tui
+build_tui: $(TUI_BIN)
+
 # Build command
 build_command: $(COMMAND_BIN)
 
-# Build os
-build_os: $(OS_IMG)
-
-.PHONY: all clean run_os build_boot build_kernel build_command build_os
+.PHONY: all clean run_os build_boot build_kernel build_tui build_command merge_boot_kernel
