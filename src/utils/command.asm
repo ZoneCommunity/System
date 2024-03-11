@@ -1,4 +1,4 @@
-
+%INCLUDE "src/tui/welcome.asm"
 command:
     
 .readkeys:
@@ -78,6 +78,12 @@ command:
     repe cmpsb           ; Compare the first 4 characters of buffer with cmd_echo
     je .cmdver          ; If equal, jump to .cmdecho
 
+    mov si, buffer        ; Load the address of buffer into SI
+    mov di, cmd_tui     ; Load the address of cmd_echo into DI
+    mov cx, 3            ; Set CX to 4 to compare the first 4 characters
+    repe cmpsb           ; Compare the first 4 characters of buffer with cmd_echo
+    je .cmdtui          ; If equal, jump to .cmdecho
+
     mov si, failure_cmd
     jmp .fail
 
@@ -100,6 +106,9 @@ command:
     call cls
     jmp .end
 
+.cmdtui:
+    jmp tui_init
+
 .cmdhelp:
     mov si, cmdout_help_1
     call println
@@ -112,6 +121,8 @@ command:
     mov si, cmdout_help_6
     call println
     mov si, cmdout_help_7
+    call println
+    mov si, cmdout_help_8
     call println
     jmp .end
 
@@ -173,6 +184,7 @@ cmd_echo db 'echo ', 0
 cmd_cls db 'cls', 0
 cmd_shutdown db 'shutdown', 0
 cmd_ver db 'ver', 0
+cmd_tui db 'tui', 0
 
 cmd_extr db '-r', 0
 
@@ -184,6 +196,7 @@ cmdout_help_3 db 'echo     > Repeats the entered text.', 0
 cmdout_help_5 db 'cls      > Clears the screen.', 0
 cmdout_help_6 db 'shutdown > Turns off your PC. Run -r to reboot.', 0
 cmdout_help_7 db 'ver      > Displays the system version.', 0
+cmdout_help_8 db 'tui      > Loads a text-based UI application.', 0
 
 cmdout_ver_1 db 'System version: ', 0
 cmdout_ver_2 db '(C) ZoneCommunity 2024', 0

@@ -71,7 +71,7 @@ Segmen:
 ret
 
 welcome_sys db 'Welcome to System ', 0
-sys_ver db "0.0.4", 0
+sys_ver db "0.0.5", 0
 
 usera db 'Enter your username: ', 0
 
