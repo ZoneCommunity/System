@@ -15,8 +15,6 @@ jmp Main
 %INCLUDE "src/utils/command.asm"
 %INCLUDE "src/utils/setup.asm"
 
-%INCLUDE "src/zonefs/zonefs.asm"
-
 
 Main:
     call Segmen
