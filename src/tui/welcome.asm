@@ -311,6 +311,7 @@ inputreciever:
     mov si, right
     call t_print
 
+    mov byte [highlighted_button], 0
     ret
 
 t_print:
