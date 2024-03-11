@@ -104,10 +104,12 @@ command:
 
 .cmdcls:
     call cls
-    jmp .end
+    jmp .end2
 
 .cmdtui:
-    jmp tui_init
+    call tui_init
+    call cls
+    jmp .end2
 
 .cmdhelp:
     mov si, cmdout_help_1
@@ -167,6 +169,23 @@ command:
     mov byte [buffer_len], 0  ; Reset buffer length to 0
 
     call newln
+
+    mov si, uname
+    call println
+    mov si, prompt_symb
+    call print
+    
+    jmp command
+
+.end2:
+    ; Reset buffer
+    mov di, buffer
+    mov cx, 255
+    mov al, 0              ; Fill buffer with zeros
+    rep stosb              ; Store AL in buffer
+
+    ; Reset buffer length
+    mov byte [buffer_len], 0  ; Reset buffer length to 0
 
     mov si, uname
     call println
