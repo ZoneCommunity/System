@@ -218,7 +218,7 @@ cmdout_help_7 db 'ver      > Displays the system version.', 0
 cmdout_help_8 db 'tui      > Loads a text-based UI application.', 0
 
 cmdout_ver_1 db 'System version: ', 0
-cmdout_ver_2 db '(C) ZoneCommunity 2024', 0
+cmdout_ver_2 db '(C) 2024 ZoneCommunity', 0
 
 
 ; OS getting too big, needs a proper bootloader and disk features
