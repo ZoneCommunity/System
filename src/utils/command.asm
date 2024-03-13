@@ -132,8 +132,6 @@ command:
     call println
     mov si, cmdout_help_8
     call println
-    mov si, cmdout_help_9
-    call println
     jmp .end
 
 .cmdecho:

@@ -28,7 +28,7 @@ Main:
     call print
     mov al, '!'
     int 10h
-
+    
     mov si, logo1
     call println
     mov si, logo2
@@ -39,9 +39,8 @@ Main:
     call println
     call newln
 
-    mov si, info1
+    mov si, accplease
     call println
-
     call newln
 
     mov si, usera
@@ -49,6 +48,11 @@ Main:
 
     ; Get the username
     call username
+
+    call newln
+    mov si, info1
+    call println
+    call newln
 
     mov si, uname
     call println
@@ -80,15 +84,17 @@ Segmen:
     mov ds, ax
 ret
 
-welcome_sys db 'Welcome to System ', 0
+welcome_sys db 'Welcome to the fowl-ified version of System ', 0
 sys_ver db "0.0.5", 0
 
-usera db 'Enter your username: ', 0
+usera db 'Username: ', 0
 
 info1 db "Type 'help' for a list of commands.", 0
 
 prompt_symb db "@system >> ", 0
 haltedmsg db 'System has halted!', 0
+
+accplease db 'Please type in your username.', 0
 
 logo1 db ' _____   _____ _____ ___ __  __', 0
 logo2 db '/ __\ \ / / __|_   _| __|  \/  |', 0
