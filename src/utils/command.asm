@@ -47,42 +47,48 @@ command:
 
 
 .handler:
-    mov si, buffer        ; Load the address of buffer into SI
+    ;|*------------------------------------------------------------------------------------------------*|
+    ;| System -- Command Handler                                                                        |
+    ;| How does it work? We move the 'buffer', or typed text into SI, and we move the command into DI   |
+    ;| Then, we move the length of the command into cx, and compare them                                |
+    ;| If all of it is the same, we jump to the command's function                                      |
+    ;|*------------------------------------------------------------------------------------------------*|
     
-    mov di, cmd_help     ; Load the address of cmd_echo into DI
-    mov cx, 4            ; Set CX to 4 to compare the first 4 characters
-    repe cmpsb           ; Compare the first 4 characters of buffer with cmd_echo
-    je .cmdhelp          ; If equal, jump to .cmdecho
+    mov si, buffer
+    mov di, cmd_help
+    mov cx, 4
+    repe cmpsb
+    je .cmdhelp
 
-    mov si, buffer        ; Load the address of buffer into SI
-    mov di, cmd_echo     ; Load the address of cmd_echo into DI
-    mov cx, 5            ; Set CX to 4 to compare the first 4 characters
-    repe cmpsb           ; Compare the first 4 characters of buffer with cmd_echo
-    je .cmdecho          ; If equal, jump to .cmdecho
+    mov si, buffer
+    mov di, cmd_echo
+    mov cx, 5
+    repe cmpsb
+    je .cmdecho
 
-    mov si, buffer        ; Load the address of buffer into SI
-    mov di, cmd_cls     ; Load the address of cmd_echo into DI
-    mov cx, 3            ; Set CX to 4 to compare the first 4 characters
-    repe cmpsb           ; Compare the first 4 characters of buffer with cmd_echo
-    je .cmdcls          ; If equal, jump to .cmdecho
+    mov si, buffer
+    mov di, cmd_cls
+    mov cx, 3
+    repe cmpsb
+    je .cmdcls
 
-    mov si, buffer        ; Load the address of buffer into SI
-    mov di, cmd_shutdown     ; Load the address of cmd_echo into DI
-    mov cx, 8            ; Set CX to 4 to compare the first 4 characters
-    repe cmpsb           ; Compare the first 4 characters of buffer with cmd_echo
-    je .cmdshutdown          ; If equal, jump to .cmdecho
+    mov si, buffer
+    mov di, cmd_shutdown
+    mov cx, 8
+    repe cmpsb
+    je .cmdshutdown
 
-    mov si, buffer        ; Load the address of buffer into SI
-    mov di, cmd_ver     ; Load the address of cmd_echo into DI
-    mov cx, 3            ; Set CX to 4 to compare the first 4 characters
-    repe cmpsb           ; Compare the first 4 characters of buffer with cmd_echo
-    je .cmdver          ; If equal, jump to .cmdecho
+    mov si, buffer
+    mov di, cmd_ver
+    mov cx, 3
+    repe cmpsb
+    je .cmdver
 
-    mov si, buffer        ; Load the address of buffer into SI
-    mov di, cmd_tui     ; Load the address of cmd_echo into DI
-    mov cx, 3            ; Set CX to 4 to compare the first 4 characters
-    repe cmpsb           ; Compare the first 4 characters of buffer with cmd_echo
-    je .cmdtui          ; If equal, jump to .cmdecho
+    mov si, buffer
+    mov di, cmd_tui
+    mov cx, 3
+    repe cmpsb
+    je .cmdtui
 
     mov si, failure_cmd
     jmp .fail
@@ -138,19 +144,18 @@ command:
     ret
 
 .cmdshutdown:
+    ; Check if the command has a '-r'
     mov si, buffer      ; Load the buffer into SI
     add si, 9           ; Add 9 to SI (Moves the buffer forward by 9 characters)
     mov di, cmd_extr    ; Load cmd_extr into DI
     mov cx, 2           ; Set CX to len of cmd_extr
     repe cmpsb          ; Compare
     je .cmdreboot       ; If true, run .cmdreboot
-
     ; Otherwise, let's make sure the command is just 'shutdown'
     mov bl, byte [buffer_len]
     mov bh, 8
     cmp bl, bh
     jne .fail
-
     ; Code to shutdown the system
     mov ax, 5307h
     mov cx, 3
