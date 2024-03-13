@@ -138,21 +138,26 @@ command:
     ret
 
 .cmdshutdown:
-    mov si, buffer        ; Load the address of buffer into SI
-    add si, 9
-    mov di, cmd_extr     ; Load the address of cmd_echo into DI
-    mov cx, 2            ; Set CX to 4 to compare the first 4 characters
-    repe cmpsb           ; Compare the first 4 characters of buffer with cmd_echo
-    je .cmdreboot          ; If equal, jump to .cmdecho
+    mov si, buffer      ; Load the buffer into SI
+    add si, 9           ; Add 9 to SI (Moves the buffer forward by 9 characters)
+    mov di, cmd_extr    ; Load cmd_extr into DI
+    mov cx, 2           ; Set CX to len of cmd_extr
+    repe cmpsb          ; Compare
+    je .cmdreboot       ; If true, run .cmdreboot
 
+    ; Otherwise, let's make sure the command is just 'shutdown'
+    mov bl, byte [buffer_len]
+    mov bh, 8
+    cmp bl, bh
+    jne .fail
+
+    ; Code to shutdown the system
     mov ax, 5307h
     mov cx, 3
     mov bx, 1
     int 15h
 
-
-
-; end
+; If the command fails
 .fail:
     mov si, failure_cmd
     call println
@@ -177,6 +182,7 @@ command:
     
     jmp command
 
+; A temporary fix for commands like 'cls', will be replaced later
 .end2:
     ; Reset buffer
     mov di, buffer
@@ -219,9 +225,6 @@ cmdout_help_8 db 'tui      > Loads a text-based UI application.', 0
 
 cmdout_ver_1 db 'System version: ', 0
 cmdout_ver_2 db '(C) 2024 ZoneCommunity', 0
-
-
-; OS getting too big, needs a proper bootloader and disk features
 
 ; --- fail ---
 cmd_none db '', 0
