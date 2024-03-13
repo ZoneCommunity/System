@@ -85,6 +85,12 @@ command:
     je .cmdver
 
     mov si, buffer
+    mov di, cmd_devs
+    mov cx, 4
+    repe cmpsb
+    je .cmddevs
+
+    mov si, buffer
     mov di, cmd_tui
     mov cx, 3
     repe cmpsb
@@ -99,6 +105,16 @@ command:
     mov si, sys_ver
     call print
     mov si, cmdout_ver_2
+    call println
+
+    jmp .end
+
+.cmddevs:
+    mov si, cmdout_devs_1
+    call println
+    mov si, cmdout_devs_2
+    call println
+    mov si, cmdout_devs_3
     call println
 
     jmp .end
@@ -131,6 +147,8 @@ command:
     mov si, cmdout_help_7
     call println
     mov si, cmdout_help_8
+    call println
+    mov si, cmdout_help_9
     call println
     jmp .end
 
@@ -215,6 +233,7 @@ cmd_cls db 'cls', 0
 cmd_shutdown db 'shutdown', 0
 cmd_ver db 'ver', 0
 cmd_tui db 'tui', 0
+cmd_devs db 'devs', 0
 
 cmd_extr db '-r', 0
 
@@ -227,9 +246,14 @@ cmdout_help_5 db 'cls      > Clears the screen.', 0
 cmdout_help_6 db 'shutdown > Turns off your PC. Run -r to reboot.', 0
 cmdout_help_7 db 'ver      > Displays the system version.', 0
 cmdout_help_8 db 'tui      > Loads a text-based UI application.', 0
+cmdout_help_9 db 'devs     > Gives the names of the developers.', 0
 
 cmdout_ver_1 db 'System version: ', 0
 cmdout_ver_2 db '(C) 2024 ZoneCommunity', 0
+
+cmdout_devs_1 db 'Developers of System:', 0
+cmdout_devs_2 db 'CreeperGuy72192', 0
+cmdout_devs_3 db 'FowluhhDevBCFunny', 0
 
 ; --- fail ---
 cmd_none db '', 0

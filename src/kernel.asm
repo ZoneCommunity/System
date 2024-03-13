@@ -29,6 +29,18 @@ Main:
     mov al, '!'
     int 10h
 
+    mov si, logo1
+    call println
+    mov si, logo2
+    call println
+    mov si, logo3
+    call println
+    mov si, logo4
+    call println
+
+    mov si, empty
+    call println
+
     mov si, info1
     call println
 
@@ -79,6 +91,13 @@ info1 db "Type 'help' for a list of commands.", 0
 
 prompt_symb db "@system# > ", 0
 haltedmsg db 'System has halted!', 0
+
+logo1 db ' _____   _____ _____ ___ __  __', 0
+logo2 db '/ __\ \ / / __|_   _| __|  \/  |', 0
+logo3 db '\__ \\ V /\__ \ | | | _|| |\/| |', 0
+logo4 db '|___/ |_| |___/ |_| |___|_|  |_|', 0
+
+empty db ' ', 0
 
 current_directory resb 255
 
