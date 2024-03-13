@@ -37,9 +37,7 @@ Main:
     call println
     mov si, logo4
     call println
-
-    mov si, empty
-    call println
+    call newln
 
     mov si, info1
     call println
@@ -89,7 +87,7 @@ usera db 'Enter your username: ', 0
 
 info1 db "Type 'help' for a list of commands.", 0
 
-prompt_symb db "@system# > ", 0
+prompt_symb db "@system >> ", 0
 haltedmsg db 'System has halted!', 0
 
 logo1 db ' _____   _____ _____ ___ __  __', 0
