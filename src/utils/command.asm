@@ -205,7 +205,7 @@ command:
     
     jmp command
 
-loadtui:
+comparecmd:
 
 
 ; Command inputs
