@@ -28,6 +28,9 @@ Main:
     call print
     mov al, '!'
     int 10h
+
+    mov si, true_statement
+    call println
     
     mov si, logo1
     call println
@@ -86,6 +89,8 @@ ret
 
 welcome_sys db 'Welcome to the fowl-ified version of System ', 0
 sys_ver db "0.0.5", 0
+
+true_statement db 'The beginning of a new beginning.', 0
 
 usera db 'Username: ', 0
 
