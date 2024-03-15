@@ -1,4 +1,5 @@
 %INCLUDE "src/tui/welcome.asm"
+%INCLUDE "src/fs/fs.asm"
 command:
     
 .readkeys:
@@ -90,9 +91,16 @@ command:
     repe cmpsb
     je .cmdtui
 
+    mov si, buffer
+    mov di, cmd_ls
+    mov cx, 2
+    repe cmpsb
+    je .cmdls
+
     mov si, failure_cmd
     jmp .fail
-
+.cmdls:
+    jmp .end
 .cmdver:
     mov si, cmdout_ver_1
     call println
@@ -218,6 +226,8 @@ cmd_tui db 'tui', 0
 
 cmd_extr db '-r', 0
 
+cmd_ls db 'ls', 0
+
 
 ; Command outputs
 cmdout_help_1 db '--------           Help menu           --------', 0
@@ -234,3 +244,6 @@ cmdout_ver_2 db '(C) 2024 ZoneCommunity', 0
 ; --- fail ---
 cmd_none db '', 0
 failure_cmd db "Invalid command, type 'help' for a list of commands.", 0
+
+    file_name db "example.txt", 0
+    file_data db "Hello, World!", 0
