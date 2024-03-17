@@ -29,19 +29,6 @@ Main:
     mov al, '!'
     int 10h
 
-    mov si, true_statement
-    call println
-    
-    mov si, logo1
-    call println
-    mov si, logo2
-    call println
-    mov si, logo3
-    call println
-    mov si, logo4
-    call println
-    call newln
-
     mov si, accplease
     call println
     call newln
@@ -52,7 +39,21 @@ Main:
     ; Get the username
     call username
 
+    call cls
+
+    mov si, true_statement
+    call println
+
+    mov si, logo1
+    call println
+    mov si, logo2
+    call println
+    mov si, logo3
+    call println
+    mov si, logo4
+    call println
     call newln
+
     mov si, info1
     call println
     call newln
@@ -87,10 +88,10 @@ Segmen:
     mov ds, ax
 ret
 
-welcome_sys db 'Welcome to the fowl-ified version of System ', 0
-sys_ver db "0.0.5", 0
+welcome_sys db 'Welcome to System ', 0
+sys_ver db "0.0.5-fowlified beta 1", 0
 
-true_statement db 'The beginning of a new beginning.', 0
+true_statement db 'WARNING! Your computer has no files, even though it may have a drive.', 0
 
 usera db 'Username: ', 0
 

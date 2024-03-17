@@ -25,25 +25,25 @@ loadwelcome:
     mov bh, 0x1F
     mov ch, 00d     ; start row
     mov cl, 00d     ; start col
-    mov dh, 02d     ; end of row
+    mov dh, 01d     ; end of row
     mov dl, 79d     ; end of col
     int 10h
 
-    mov bh, 0x7F
-    mov ch, 03d     ; start row
+    mov bh, 0x0F
+    mov ch, 02d     ; start row
     mov cl, 00d     ; start col
-    mov dh, 22d     ; end of row
+    mov dh, 23d     ; end of row
     mov dl, 79d     ; end of col
     int 10h
 
     mov bh, 0x1F
-    mov ch, 23d     ; start row
+    mov ch, 24d     ; start row
     mov cl, 00d     ; start col
     mov dh, 24d     ; end of row
     mov dl, 79d     ; end of col
     int 10h
     ; Buttons
-    mov bh, 0x1B        ; Display attribute
+    mov bh, 0x5F        ; Display attribute
     mov ch, 14          ; Row for buttons
 
     ; First Button
@@ -89,6 +89,7 @@ loadtext:
 
     mov si, right
     call t_print
+
     ret
     
 
@@ -126,7 +127,7 @@ inputreciever:
 .left_pressed:
     ; Buttons
     mov ah, 0x06
-    mov bh, 0x1B        ; Display attribute
+    mov bh, 0x5F        ; Display attribute
     mov ch, 14          ; Row for buttons
 
     ; First Button
@@ -173,7 +174,7 @@ inputreciever:
     mov dh, 15          ; End of row for first button
     mov dl, 36          ; End of column for first button
     int 10h             ; Display the first button
-    mov bh, 0x1B        ; Display attribute
+    mov bh, 0x5F        ; Display attribute
     mov ch, 14          ; Row for buttons
     ; Second Button
     mov cl, 41          ; Start column for second button (adjust as needed)
@@ -241,7 +242,7 @@ inputreciever:
 
     ; Buttons
     mov ah, 0x06
-    mov bh, 0x1B        ; Display attribute
+    mov bh, 0x5F        ; Display attribute
     mov ch, 14          ; Row for buttons
 
     ; First Button
@@ -294,7 +295,7 @@ inputreciever:
 
     ; Buttons
     mov ah, 0x06
-    mov bh, 0x1B        ; Display attribute
+    mov bh, 0x5F        ; Display attribute
     mov ch, 14          ; Row for buttons
     ; Second Button
     mov cl, 41          ; Start column for second button (adjust as needed)
@@ -350,8 +351,9 @@ t_newln:
     ret
 
 ; Strings
-menubar_1 db '  System -- Welcome App', 0
+menubar_1 db '  System -- Fowlified Welcome App', 0
+bbar_1 db '                                                                              //'
 
-left db 'Do Nothing', 0
-right db 'Exit', 0
+left db 'Wuh', 0
+right db 'Go back', 0
 highlighted_button db 0
