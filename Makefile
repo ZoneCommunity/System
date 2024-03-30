@@ -14,7 +14,7 @@ KERNEL_SRC=$(SRCDIR)/kernel.asm
 BOOT_BIN=$(BUILDDIR)/boot.bin
 KERNEL_BIN=$(BUILDDIR)/kernel.bin
 OS_BIN=$(BUILDDIR)/os.bin
-OS_IMG=$(BUILDDIR)/os.img
+OS_IMG=$(BUILDDIR)/System.img
 IMG_SIZE=1440
 
 # Default target
