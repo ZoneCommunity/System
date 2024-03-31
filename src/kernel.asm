@@ -45,11 +45,6 @@ Main:
     mov si, prompt_symb
     call print
 
-    mov byte [1000000], 'A'
-    mov ah, 0x0e
-    mov al, [1000000]
-    int 10h
-
     ; Begin typing loop
     call command
 
