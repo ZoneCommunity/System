@@ -1,6 +1,6 @@
 %INCLUDE "src/disk/memory.asm"
 [BITS 16]
-[ORG KERNELOFFSET]
+[ORG 0x0000]
 
 section .bss
     buffer resb 100    ; Define a buffer to store input (maximum size 255 bytes)
@@ -79,8 +79,6 @@ info1 db "Type 'help' for a list of commands.", 0
 
 prompt_symb db "@system# > ", 0
 haltedmsg db 'System has halted!', 0
-
-current_directory resb 255
 
 uname resb 20
 uname_len resb 1
