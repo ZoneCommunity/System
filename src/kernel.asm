@@ -1,10 +1,9 @@
-%INCLUDE "src/disk/memory.asm"
 [BITS 16]
 [ORG 0x0000]
 
 section .bss
-    buffer resb 100    ; Define a buffer to store input (maximum size 255 bytes)
-    buffer_len resb 1  ; Variable to store the length of input
+    buffer resb 100
+    buffer_len resb 1
     
 section .text
 
@@ -17,11 +16,15 @@ jmp Main
 
 
 Main:
-    call Segmen
-    call Stack
-
-    call cls
+    mov ax, cs
+    mov ds, ax
+    mov es, ax
+    mov ss, ax
+    mov sp, 0x7C00
     
+    ; call cls
+    
+    call newln
     mov si, welcome_sys
     call print
     mov si, sys_ver
@@ -59,16 +62,6 @@ Main:
     
     jmp $
 
-Stack:
-    mov ax, 0x0200b
-    mov ss, ax
-    mov sp, 0x0300b
-ret
-
-Segmen:
-    mov ax, es
-    mov ds, ax
-ret
 
 welcome_sys db 'Welcome to System ', 0
 sys_ver db "0.0.5", 0
