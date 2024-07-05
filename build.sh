@@ -1,6 +1,6 @@
 # asm to bin
-nasm -f bin -o build/boot.bin src/boot.asm
-nasm -f bin -o build/kernel.bin src/kernel.asm
+nasm -f bin -o build/boot.bin src/Bootloader/Boot.asm
+nasm -f bin -o build/kernel.bin src/Kernel/Main.asm
 
 # disk image
 dd if=/dev/zero of=build/ReDOS.img bs=512 count=2880
