@@ -5,19 +5,19 @@
 jmp short start
 nop
 
-bdb_oem:                    DB  "REDOS0.2"
-bdb_bytes_per_sector:       DW  512
-bdb_sectors_per_cluster:    DB  1
-bdb_reserved_sectors:       DW  1
-bdb_fat_count:              DB  2
-bdb_dir_entries_count:      DW  0E0h
-bdb_total_sectors:          DW  2880
-bdb_media_descriptor_type:  DB  0F0h
-bdb_sectors_per_fat:        DW  9
-bdb_sectors_per_track:      DW  18
-bdb_heads:                  DW  2
-bdb_hidden_sectors:         DD  0
-bdb_large_sector_count:     DD  0
+bpb_oem:                    DB  "REDOS0.2"
+bpb_bytes_per_sector:       DW  512
+bpb_sectors_per_cluster:    DB  1
+bpb_reserved_sectors:       DW  1
+bpb_fat_count:              DB  2
+bpb_dir_entries_count:      DW  0E0h
+bpb_total_sectors:          DW  2880
+bpb_media_descriptor_type:  DB  0F0h
+bpb_sectors_per_fat:        DW  9
+bpb_sectors_per_track:      DW  18
+bpb_heads:                  DW  2
+bpb_hidden_sectors:         DD  0
+bpb_large_sector_count:     DD  0
 
 ebr_drive_number:           DB  0
                             DB  0
@@ -44,17 +44,17 @@ start:
     ; Root Directory
     ; Data
 
-    mov ax, [bdb_sectors_per_fat]
-    mov bl, [bdb_fat_count]
+    mov ax, [bpb_sectors_per_fat]
+    mov bl, [bpb_fat_count]
     xor bh, bh
     mul bx  ; Gives the 18 Sectors
-    add ax, [bdb_reserved_sectors]  ;LBA of the root directory
+    add ax, [bpb_reserved_sectors]  ;LBA of the root directory
     push ax
 
-    mov ax, [bdb_dir_entries_count]
+    mov ax, [bpb_dir_entries_count]
     shl ax, 5 ;ax *= 32
     xor dx, dx
-    div word [bdb_bytes_per_sector] ;(32*num of entries)/bytes per sector
+    div word [bpb_bytes_per_sector] ;(32*num of entries)/bytes per sector
 
     test dx, dx
     jz rootDirAfter
@@ -80,7 +80,7 @@ searchKernel:
 
     add di, 32
     inc bx
-    cmp bx, [bdb_dir_entries_count]
+    cmp bx, [bpb_dir_entries_count]
     jl searchKernel
 
     jmp kernelNotFound
@@ -95,10 +95,11 @@ foundKernel:
     mov ax, [di+26] ; di is address of kernel, 26 offset to first cluster field
     mov [kernel_cluster], ax
 
-    mov ax, [bdb_reserved_sectors]
+    mov ax, [bpb_reserved_sectors]
     mov bx, buffer
-    mov cl, [bdb_sectors_per_fat]
+    mov cl, [bpb_sectors_per_fat]
     mov dl, [ebr_drive_number]
+
 
     call disk_read
 
@@ -114,7 +115,7 @@ loadKernelLoop:
 
     call disk_read
 
-    add bx, [bdb_bytes_per_sector]
+    add bx, [bpb_bytes_per_sector]
 
     mov ax, [kernel_cluster] ;(Kernel Cluster * 3)/2
     mov cx, 3
@@ -164,12 +165,12 @@ lba_to_chs:
     push dx
 
     xor dx, dx
-    div word [bdb_sectors_per_track]    ;(LBA % sectors per track) + 1 <- Sector
+    div word [bpb_sectors_per_track]    ;(LBA % sectors per track) + 1 <- Sector
     inc dx  ; Sector
     mov cx, dx
 
     xor dx, dx
-    div word [bdb_heads]
+    div word [bpb_heads]
 
     mov dh, dl  ; Head
     mov ch, al

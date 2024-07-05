@@ -13,7 +13,7 @@ jmp Main
 %INCLUDE "src/utils/print.asm"
 %INCLUDE "src/utils/command.asm"
 %INCLUDE "src/utils/setup.asm"
-
+%INCLUDE "src/fs/disk.asm"
 
 Main:
     mov ax, cs
@@ -43,6 +43,20 @@ Main:
     ; Get the username
     call username
 
+    call run_me
+
+    jmp hang
+
+wow:
+    ; Reset buffer
+    mov di, buffer
+    mov cx, 255
+    mov al, 0              ; Fill buffer with zeros
+    rep stosb              ; Store AL in buffer
+
+    ; Reset buffer length
+    mov byte [buffer_len], 0  ; Reset buffer length to 0
+
     mov si, uname
     call println
     mov si, prompt_symb
@@ -54,9 +68,9 @@ Main:
     mov si, haltedmsg
     call println
 
-    jmp .hang
+    jmp hang
 
-.hang:
+hang:
     cli
     hlt
     
