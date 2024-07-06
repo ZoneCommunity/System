@@ -37,11 +37,11 @@ Main:
 
     call newln
 
-    mov si, usera
-    call println
+    ;mov si, usera
+    ;call println
 
     ; Get the username
-    call username
+    ;call username
 
     call run_me
 
@@ -57,10 +57,10 @@ wow:
     ; Reset buffer length
     mov byte [buffer_len], 0  ; Reset buffer length to 0
 
-    mov si, uname
-    call println
+    ; mov si, uname
+    ; call println
     mov si, prompt_symb
-    call print
+    call println
 
     ; Begin typing loop
     call command
@@ -84,7 +84,7 @@ usera db 'Enter your username: ', 0
 
 info1 db "Type 'help' for a list of commands.", 0
 
-prompt_symb db "@system# > ", 0
+prompt_symb db "A:/>", 0
 haltedmsg db 'System has halted!', 0
 
 uname resb 20
