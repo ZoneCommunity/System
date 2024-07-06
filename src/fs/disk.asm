@@ -109,7 +109,7 @@ print_current_directory:
     mov si, dir_indicator
     call print
 
-.not_directory:
+.not_directory
     mov al, ' '
     call print_char
 
