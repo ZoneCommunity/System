@@ -56,6 +56,10 @@ command:
     ;|*------------------------------------------------------------------------------------------------*|
     
     mov si, buffer
+    mov cx, [buffer_len]
+    call to_lowercase
+
+    mov si, buffer
     mov di, cmd_help
     mov cx, 4
     repe cmpsb
@@ -97,10 +101,36 @@ command:
     repe cmpsb
     je .cmdls
 
+    mov si, buffer
+    mov di, cmd_type
+    mov cx, 5
+    repe cmpsb
+    je .cmdtype
+
     mov si, failure_cmd
     jmp .fail
 .cmdls:
+    call print_root
+    jmp .end2
+.cmdtype:
+    mov si, buffer
+    add si, 5
+    mov cx, 11
+    call to_uppercase
+
+    call convt_filename
+
+    call find_file
+    jc .file_not_found
+
+    call print_file_contents
     jmp .end
+
+.file_not_found:
+    mov si, file_not_found_msg
+    call println
+    jmp .end
+    
 .cmdver:
     mov si, cmdout_ver_1
     call println
@@ -139,6 +169,8 @@ command:
     mov si, cmdout_help_7
     call println
     mov si, cmdout_help_8
+    call println
+    mov si, cmdout_help_9
     call println
     jmp .end
 
@@ -228,6 +260,8 @@ cmd_extr db '-r', 0
 
 cmd_ls db 'ls', 0
 
+cmd_type db 'type ', 0
+
 
 ; Command outputs
 cmdout_help_1 db '--------           Help menu           --------', 0
@@ -237,6 +271,7 @@ cmdout_help_5 db 'cls      > Clears the screen.', 0
 cmdout_help_6 db 'shutdown > Turns off your PC. Run -r to reboot.', 0
 cmdout_help_7 db 'ver      > Displays the system version.', 0
 cmdout_help_8 db 'tui      > Loads a text-based UI application.', 0
+cmdout_help_9 db 'ls       > Lists the files in the root directory.', 0
 
 cmdout_ver_1 db 'System version: ', 0
 cmdout_ver_2 db '(C) 2024 ZoneCommunity', 0

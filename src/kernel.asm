@@ -4,6 +4,8 @@
 section .bss
     buffer resb 100
     buffer_len resb 1
+    temp_buffer resb 100
+    ext_buffer resb 100
     
 section .text
 
@@ -37,17 +39,6 @@ Main:
 
     call newln
 
-    ;mov si, usera
-    ;call println
-
-    ; Get the username
-    ;call username
-
-    call run_me
-
-    jmp hang
-
-wow:
     ; Reset buffer
     mov di, buffer
     mov cx, 255
