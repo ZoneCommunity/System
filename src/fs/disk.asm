@@ -83,6 +83,15 @@ print_current_directory:
     test al, 0x08  ; volume label
     jnz .skip_entry
 
+    ; For changing colors
+    mov ah, 0x06
+    mov bh, 0x1F
+    mov ch, 24d     ; start row
+    mov cl, 00d	    ; start col
+    mov dh, 24d	    ; end of row
+    mov dl, 79d	    ; end of col
+    int 10h
+    
     ; print filename
     push cx
     push di
@@ -102,8 +111,6 @@ print_current_directory:
     
     mov si, dir_indicator
     call print
-    
-    call newln
 
 .not_directory:
     call newln
@@ -177,41 +184,54 @@ print_file_contents:
     ; Get first cluster
     mov ax, [di + 26]  ; First cluster is at offset 26 in directory entry
     
-    ; Load and print file contents
+    ; Get file size (located at offset 28-29 in directory entry)
+    mov ax, [di + 28]
+    mov [file_size], ax
+
 .read_cluster:
-    push ax
-    sub ax, 2  ; Adjust cluster number (first data cluster is 2)
-    mov cl, [bpb_sectors_per_cluster]
-    mul cl
-    add ax, [data_start]  ; data_start = reserved + FATs + root directory sectors
+    push ax  ; Save current cluster
     
+    ; Convert cluster to LBA
+    sub ax, 2
+    xor cx, cx
     mov cl, [bpb_sectors_per_cluster]
+    mul cx
+    add ax, [data_start]
+    
+    ; Read cluster
     mov bx, temp_buffer
+    mov cl, [bpb_sectors_per_cluster]
     mov dl, [ebr_drive_number]
     call disk_read
-
-    ; Print contents of this cluster
+    
+    ; Print cluster contents
     mov si, temp_buffer
-    mov cx, 512
-    mul cx  ; Multiply sectors read by bytes per sector
-    mov cx, ax  ; CX now contains total bytes read
-.print_byte:
-    lodsb
-    test al, al  ; Check for null terminator
-    jz .done
-    call print_char
-    loop .print_byte
+    mov cx, [file_size]  ; Use file size to control print
 
+.print_loop:
+    cmp cx, 0
+    jz .next_cluster   ; Stop when file size reaches 0
+    lodsb
+    dec cx
+    cmp al, 32  ; Check if character is below space (non-printable)
+    jb .skip_char
+    cmp al, 126  ; Check if character is above '~' (non-printable)
+    ja .skip_char
+    call print_char
+.skip_char:
+    loop .print_loop
+
+.next_cluster:
     ; Get next cluster
-    pop ax
     call get_next_cluster
-    cmp ax, 0xFF8  ; Check for end of file
-    jb .read_cluster
+    test ax, ax
+    jz .done  ; End of file if no next cluster
+    jmp .read_cluster  ; Continue reading next cluster
 
 .done:
-    call newln
     popa
     ret
+
 
 get_next_cluster:
     push es

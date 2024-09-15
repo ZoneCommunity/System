@@ -4,7 +4,9 @@
 section .bss
     buffer resb 100
     buffer_len resb 1
+    file_size resb 1
     temp_buffer resb 100
+    orig_case resb 100
     ext_buffer resb 100
     
 section .text

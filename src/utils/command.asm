@@ -1,5 +1,4 @@
 %INCLUDE "src/tui/welcome.asm"
-%INCLUDE "src/fs/fs.asm"
 command:
     
 .readkeys:
@@ -48,13 +47,11 @@ command:
 
 
 .handler:
-    ;|*------------------------------------------------------------------------------------------------*|
-    ;| System -- Command Handler                                                                        |
-    ;| How does it work? We move the 'buffer', or typed text into SI, and we move the command into DI   |
-    ;| Then, we move the length of the command into cx, and compare them                                |
-    ;| If all of it is the same, we jump to the command's function                                      |
-    ;|*------------------------------------------------------------------------------------------------*|
-    
+    mov si, buffer
+    mov di, orig_case
+    mov cx, [buffer_len]
+    rep movsb
+
     mov si, buffer
     mov cx, [buffer_len]
     call to_lowercase
@@ -119,7 +116,7 @@ command:
     call to_uppercase
 
     call convt_filename
-
+    
     call find_file
     jc .file_not_found
 
@@ -129,7 +126,7 @@ command:
 .file_not_found:
     mov si, file_not_found_msg
     call println
-    jmp .end
+    jmp .end2
     
 .cmdver:
     mov si, cmdout_ver_1
@@ -175,7 +172,7 @@ command:
     jmp .end
 
 .cmdecho:
-    mov si, buffer
+    mov si, orig_case
     add si, 5
     call println
     jmp .end

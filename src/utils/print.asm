@@ -64,8 +64,6 @@ colorln:
     ret
 
 cls:
-
-
     ; clear the screen
     mov ax, 02
     int 0x10

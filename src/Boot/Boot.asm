@@ -113,6 +113,7 @@ kernel_notfound:
     call print_string
 
     hlt
+    jmp $
 
 kernel_found:
     mov ax, [di+26] ; di is address of kernel, 26 offset to first cluster field
@@ -198,7 +199,7 @@ print_string:
 
     %INCLUDE "src/Boot/Disk.asm"
 
-    filename    db "KERNEL  BIN"    ; kyliejennerOS kernel
+    filename    db "KERNEL  BIN"
 
     not_found   db "KERNEL.BIN was not found! ReDOS cannot boot.", 0
 
