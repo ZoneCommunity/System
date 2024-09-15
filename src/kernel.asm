@@ -26,8 +26,6 @@ Main:
     mov ss, ax
     mov sp, 0x7C00
     
-    ; call cls
-    
     call newln
     mov si, welcome_sys
     call print
@@ -38,24 +36,17 @@ Main:
 
     mov si, info1
     call println
-
     call newln
 
-    ; Reset buffer
     mov di, buffer
     mov cx, 255
-    mov al, 0              ; Fill buffer with zeros
-    rep stosb              ; Store AL in buffer
+    mov al, 0
+    rep stosb
+    mov byte [buffer_len], 0
 
-    ; Reset buffer length
-    mov byte [buffer_len], 0  ; Reset buffer length to 0
-
-    ; mov si, uname
-    ; call println
     mov si, prompt_symb
     call println
 
-    ; Begin typing loop
     call command
 
     mov si, haltedmsg
@@ -63,22 +54,32 @@ Main:
 
     jmp hang
 
+error:
+    mov si, error_x
+    call println
+    jmp hang
 hang:
     cli
     hlt
     
     jmp $
 
+; ------------------------------------------------------------------
+; data section
+    welcome_sys db 'Welcome to System ', 0
+    sys_ver db "0.0.5", 0
 
-welcome_sys db 'Welcome to System ', 0
-sys_ver db "0.0.5", 0
+    error_x db "Something went wrong..", 0
 
-usera db 'Enter your username: ', 0
+    usera db 'Enter your username: ', 0
 
-info1 db "Type 'help' for a list of commands.", 0
+    info1 db "Type 'help' for a list of commands.", 0
 
-prompt_symb db "A:/>", 0
-haltedmsg db 'System has halted!', 0
+    prompt_symb db "A:/>", 0
+    haltedmsg db 'System has halted!', 0
 
-uname resb 20
-uname_len resb 1
+    filename db "TEST    TXT"
+
+    uname resb 20
+    uname_len resb 1
+; ------------------------------------------------------------------

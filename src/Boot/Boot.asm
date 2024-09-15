@@ -194,14 +194,14 @@ print_string:
 ; ------------------------------------------------------------------
 ; data section
 
-    boot_msg db 'ReDOS Bootloader has loaded', 13, 10, 0
+    boot_msg db 'System Bootloader has loaded', 13, 10, 0
     loading_msg db 'Loading kernel...', 13, 10, 0
 
     %INCLUDE "src/Boot/Disk.asm"
 
     filename    db "KERNEL  BIN"
 
-    not_found   db "KERNEL.BIN was not found! ReDOS cannot boot.", 0
+    not_found   db "KERNEL.BIN was not found! System cannot boot", 0
 
     bootdevice  db 0
     cluster		dw 0

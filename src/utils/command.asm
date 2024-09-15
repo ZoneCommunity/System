@@ -117,10 +117,10 @@ command:
 
     call convt_filename
     
-    call find_file
+    ;call find_file
     jc .file_not_found
 
-    call print_file_contents
+    ;call print_file_contents
     jmp .end
 
 .file_not_found:
@@ -276,6 +276,3 @@ cmdout_ver_2 db '(C) 2024 ZoneCommunity', 0
 ; --- fail ---
 cmd_none db '', 0
 failure_cmd db "Invalid command, type 'help' for a list of commands.", 0
-
-    file_name db "example.txt", 0
-    file_data db "Hello, World!", 0
