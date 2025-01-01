@@ -271,7 +271,7 @@ cmdout_help_8 db 'tui      > Loads a text-based UI application.', 0
 cmdout_help_9 db 'ls       > Lists the files in the root directory.', 0
 
 cmdout_ver_1 db 'System version: ', 0
-cmdout_ver_2 db '(C) 2024 ZoneCommunity', 0
+cmdout_ver_2 db '(C) 2025 ZoneCommunity', 0
 
 ; --- fail ---
 cmd_none db '', 0
